@@ -3,6 +3,8 @@ from pathlib import Path
 import pydantic
 from typing import Optional,List,Dict
 import re
+import inspect
+
 
 class Instance(pydantic.BaseModel):
     id:str
@@ -41,9 +43,25 @@ def get_openpechaId_from_catalog(workId):
             return openPechaId
     return
 
+
+def convert_to_yaml(work_obj):
+    pass
+
+def get_members(obj):
+    obj_attributes = []
+    for i in inspect.getmembers(obj):
+    # to remove private and protected
+    # functions
+        if not i[0].startswith('_'):
+            # To remove other methods that
+            # doesnot start with a underscore
+            if not inspect.ismethod(i[1]):
+                obj_attributes.append(i)
+    return obj_attributes
+
 if __name__ == "__main__":
     obj1 = Instance(id="123")
     obj2 = Work(id="345")
     obj2.set_instance(obj1)
-    print(obj2.get_instances())
+    get_members(obj2)
 

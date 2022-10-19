@@ -2,7 +2,7 @@ from ast import In
 from pathlib import Path
 import pydantic
 from typing import Optional,List,Dict
-
+import re
 
 class Instance(pydantic.BaseModel):
     id:str
@@ -32,6 +32,14 @@ class Work(pydantic.BaseModel):
             self.instances = []
             self.instances.append(instance_obj)   
 
+
+def get_openpechaId_from_catalog(workId):
+    catalog = Path("catalog.csv").read_text()
+    for line in catalog.splitlines():
+        if f"bdr:{workId}" in line:
+            openPechaId = re.match("\[(.*)\]",line).group(1)
+            return openPechaId
+    return
 
 if __name__ == "__main__":
     obj1 = Instance(id="123")

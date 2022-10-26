@@ -1,0 +1,126 @@
+id: W001275A2
+title: བླ་ན་མེད་པར་བསྟོད་པ།
+alternative_title: null
+author: སློབ་དཔོན་ཀླུ་སྒྲུབ།
+bdrc_work_id: WA0RT0021
+instances:
+    6aad1ec0998c44e8a3222c0eb42e6831:
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW1KG13126_2021
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W1KG13126
+            opf_id: I647D7CBC
+        source_metadata:
+            work_id: W1KG13126
+            imagegroup: I1KG13170
+            volume: v001
+    f43a4bef1d1140d2ae3ca88c1c65b65f: 
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW1KG13126_5471
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W1KG13126
+            opf_id: I647D7CBC
+        source_metadata:
+            work_id: W1KG13126
+            imagegroup: I1KG13290
+            volume: v121
+    29edd89f9ce14f48a0a2f93f26961178:
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW1PD95844_0022
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W1PD95844
+            opf_id: IA3E40644, P000791
+        source_metadata:
+            work_id: W1PD95844
+            imagegroup: I1PD95846
+            volume: v001
+    4cc2f6cff8af47e9b391aeccb05d4f65:
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW22704_0810
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W22704
+            opf_id: IA970B393, I1CDABC08
+        source_metadata:
+            work_id: W22704
+            imagegroup: I3252
+            volume: v001
+    91ca37627b934e7a9d21cdaae95aa118:
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW22704_4260
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W22704
+            opf_id: IA970B393, I1CDABC08
+        source_metadata:
+            work_id: W22704
+            imagegroup: I3372
+            volume: v121
+    1bb0846c1e2940c9ab8d423143bd7b3e:
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW23702_0021
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W23702
+            opf_id: null
+        source_metadata:
+            work_id: W23702
+            imagegroup: I1PD31338
+            volume: v001
+    d45e26bee7d84f9c98fbc5140be4b907:
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW23702_3474
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W23702
+            opf_id: null
+        source_metadata:
+            work_id: W23702
+            imagegroup: I1PD31458
+            volume: v121
+    6f30fd51d639443384df1f5654161c14:
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW23703_1130
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W23703
+            opf_id: I1174EF34, IDB841B14
+        source_metadata:
+            work_id: W23703
+            imagegroup: I1317
+            volume: v001
+    f596e0b7eef8410bbcc179de5f30d318:
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW2KG5015_0810
+        opf_id:
+        bdrc_collection_info:
+            bdrc_work_id: W2KG5015
+            opf_id: IF6EAA761
+        source_metadata:
+            work_id: W2KG5015
+            imagegroup: I2KG212285
+            volume: v001
+    5e9d694fcfad44c7a02d3a4503446305:
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW2KG5015_4260
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W2KG5015
+            opf_id: IF6EAA761
+        source_metadata:
+            work_id: W2KG5015
+            imagegroup: I2KG212405
+            volume: v121

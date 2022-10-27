@@ -4,18 +4,17 @@ alternative_title: null
 author: སློབ་དཔོན་ཀླུ་སྒྲུབ།
 bdrc_work_id: WA0RT0021
 instances:
-    6aad1ec0998c44e8a3222c0eb42e6831:
-        title: བླ་ན་མེད་པའི་བསྟོད་པ།
-        language: bo
-        bdrc_instance_id: MW1KG13126_2021
-        opf_id: null
-        bdrc_collection_info:
-            bdrc_work_id: W1KG13126
-            opf_id: I647D7CBC
-        source_metadata:
-            work_id: W1KG13126
+  - title: བླ་ན་མེད་པའི་བསྟོད་པ།
+    language: bo
+    bdrc_instance_id: MW1KG13126_2021
+    pecha_id: null
+    bdrc_collection_info:
+        id: W1KG13126
+        estimated_boundry:
             imagegroup: I1KG13170
-            volume: v001
+            start_img:
+            end_img:
+        pecha_id: I647D7CBC
     f43a4bef1d1140d2ae3ca88c1c65b65f: 
         title: བླ་ན་མེད་པའི་བསྟོད་པ།
         language: bo
@@ -35,7 +34,19 @@ instances:
         opf_id: null
         bdrc_collection_info:
             bdrc_work_id: W1PD95844
-            opf_id: IA3E40644, P000791
+            opf_id: P000791
+        source_metadata:
+            work_id: W1PD95844
+            imagegroup: I1PD95846
+            volume: v001
+        title: བླ་ན་མེད་པའི་བསྟོད་པ།
+        language: bo
+        bdrc_instance_id: MW1PD95844_0022
+        opf_id: null
+        bdrc_collection_info:
+            bdrc_work_id: W1PD95844
+            pecha_id: IA3E40644
+            ocr_date: 
         source_metadata:
             work_id: W1PD95844
             imagegroup: I1PD95846

@@ -1,0 +1,23 @@
+id: W001275A2
+title: བླ་ན་མེད་པར་བསྟོད་པ།
+alternative_title: null
+author: སློབ་དཔོན་ཀླུ་སྒྲུབ།
+bdrc_work_id: WA0RT0021
+instances:
+  - title: བླ་ན་མེད་པའི་བསྟོད་པ།
+    language: bo
+    type: Standalone
+    pecha_id: I001287
+    source_metadata:
+      id: bdr:MW1KG13126_2021
+  - title: བླ་ན་མེད་པའི་བསྟོད་པ།
+    language: bo
+    type: InCollection
+    pecha_id: I647D7CBC
+    bdrc_collection_info:
+      id: W1KG13126
+      imagegroup: I1KG13170
+      esitmated_boundry:
+    source_metadata:
+      id: MW1KG13126_2021
+      

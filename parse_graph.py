@@ -22,39 +22,53 @@ def ewtstobo(ewtsstr):
     res = EWTSCONV.toUnicode(ewtsstr)
     return res
 
-def get_author_ids(agent_ids):
-    author_ids = []
-    g = Graph()
-    try:
-        for agent_id in agent_ids:
-            ttl = requests.get(f"https://purl.bdrc.io/query/graph/OP_info?R_RES=bdr:{agent_id}&format=ttl")
-            g.parse(data=ttl.text, format='ttl')
-            
-            authors = g.objects(BDR[agent_id], BDO["author"])
-            for author in authors:
-                author_id = author.split("/")[-1]
-                author_ids.append(author_id)
-        return author_ids
-    except:
+def get_value(g, id, type):
+    if g.value(BDR[id], BDO[type]):
+        value = g.value(BDR[id], BDO[type])
+        return value
+    else:
         return None
 
+def get_location_info(id):
+    g = get_graph_of_id(id)
+    location_info = {
+        "contentLocationEndLine": get_value(g, id, "contentLocationEndLine"),
+        "contentLocationEndPage": get_value(g, id, "contentLocationEndPage"),
+        "contentLocationInstance": get_value(g, id, "contentLocationInstance"),
+        "contentLocationLine": get_value(g, id, "contentLocationLine"),
+        "contentLocationPage": get_value(g, id, "contentLocationPage"),
+        "contentLocationVolume": get_value(g, id, "contentLocationVolume")
+    }
+    return location_info
 
-def get_agent_ids(creator_ids):
-    agent_ids = []
-    g = Graph()
-    try:
-        for creator_id in creator_ids:
-            ttl = requests.get(f"https://purl.bdrc.io/query/graph/OP_info?R_RES=bdr:{creator_id}&format=ttl")
-            g.parse(data=ttl.text, format='ttl')
-            
-            agents = g.objects(BDR[creator_id], BDO["agent"])
-            for agent in agents:
-                agent_id = agent.split("/")[-1]
-                agent_ids.append(agent_id)
-        return agent_ids
-    except:
-        return None
-            
+def get_root_instance_id(g, id):
+    root_instance_id = g.objects(BDR[id], BDO["inRootInstance"])
+    return root_instance_id
+       
+def get_instance_info(id):
+    instance_g = get_graph_of_id(id)
+    location_id = instance_g.objects(BDR[id], BDO["contentLocation"])
+    location_info = get_location_info(location_id)
+    rootInstanceid = get_root_instance_id(instance_g, id)
+    title, alternative_title  = get_titles(instance_g, id)
+    
+
+def get_instance_info_list(instance_ids):
+    instances = []
+    for instance_id in instance_ids:
+        instance_info = get_instance_info(instance_id)
+        instances.append(instance_info)
+    return instances
+
+def get_ids(ids, type):
+    _ids = []
+    for id in ids:
+        g = get_graph_of_id(id)
+        names = g.objects(BDR[id], BDO[type])
+        for name in names:
+            _id = name.split("/")[-1]
+            _ids.append(_id)
+    return _ids
 
 def parse_author_ids(g, work_id):
     creator_ids = []
@@ -63,25 +77,14 @@ def parse_author_ids(g, work_id):
         for creator in creators:
             creator_id = creator.split("/")[-1]
             creator_ids.append(creator_id)
-        agent_ids = get_agent_ids(creator_ids)
-        # author_ids = get_author_ids(agent_ids)
-        return agent_ids
+        author_ids = get_ids(creator_ids, "agent")
+        return author_ids
     except:
         return None
-        
-def get_graph_of_id(id):
-    g = Graph()
-    try:
-        ttl = requests.get(f"https://purl.bdrc.io/query/graph/OP_info?R_RES=bdr:{id}&format=ttl")
-        g.parse(data=ttl.text, format="ttl")
-        return g
-    except:
-        return 
 
-
-def get_author(g, work_id):
+def get_author(g, id):
     authors = []
-    author_ids = parse_author_ids(g, work_id)
+    author_ids = parse_author_ids(g, id)
     for author_id in author_ids:
         author_g = get_graph_of_id(author_id)
         author = author_g.value(BDR[author_id], SKOS["prefLabel"])
@@ -92,28 +95,32 @@ def get_author(g, work_id):
             authors.append(author.value)
     return authors
 
+def get_text(value):
+    if value.language == "bo-x-ewts":
+        return ewtstobo(value)
+    else:
+        return value.split("/")[0]
 
 def get_titles(g, id):
     title = g.value(BDR[id], SKOS["prefLabel"])
     alternative_title = g.value(BDR[id], SKOS["altLabel"])
+    title = get_text(title)
+    alternative_title = get_text(alternative_title)
     return title, alternative_title
 
-def get_instance_info(instance_id):
-    pass
-
-def get_instance_info_list(instance_ids):
-    instances = []
-    for instance_id in instance_ids:
-        instance_info = get_instance_info(instance_id)
-        instances.append(instance_info)
-    return instances
+def get_graph_of_id(id):
+    g = Graph()
+    try:
+        ttl = requests.get(f"https://purl.bdrc.io/query/graph/OP_info?R_RES=bdr:{id}&format=ttl")
+        g.parse(data=ttl.text, format="ttl")
+        return g
+    except:
+        return None
 
 def get_work_info(id, OP_work_id):
     instance_ids = []
-    g = Graph()
     try:
-        ttl_response = requests.get(f"https://purl.bdrc.io/query/graph/OP_info?R_RES=bdr:{id}&format=ttl")
-        g.parse(data=ttl_response.text, format="ttl")
+        g = get_graph_of_id(id)
         
         title, alternative_title = get_titles(g, id)
         authors = get_author(g, id)
@@ -152,6 +159,5 @@ if __name__ == '__main__':
         for info in infos:
             id = info[0]
             work = info[1].split("/")[-1]
-            work_info = get_work_info(work)
             OP_work_id = get_op_work_id(work)
-            # print(scan_info)
+            work_info = get_work_info(work, OP_work_id)

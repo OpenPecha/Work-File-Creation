@@ -3,7 +3,11 @@ from pathlib import Path
 import pydantic
 from typing import Optional,List,Dict
 import re
+import yaml
 import inspect
+from git import Repo
+from github import Github
+import os
 
 
 class Instance(pydantic.BaseModel):
@@ -45,9 +49,11 @@ def get_openpechaId_from_catalog(workId):
 
 
 def convert_to_yaml(work_obj):
-    pass
+    attributes = get_obj_members(work_obj)
+    y = yaml.dump(attributes)
 
-def get_members(obj):
+
+def get_obj_members(obj):
     obj_attributes = []
     for i in inspect.getmembers(obj):
     # to remove private and protected
@@ -59,9 +65,17 @@ def get_members(obj):
                 obj_attributes.append(i)
     return obj_attributes
 
+def publish_repo(file,token):
+    g = Github(token)
+    works_repo_name = "OpenPecha-Data/works"
+    works_repo = g.get_repo(works_repo_name)
+    works_repo.create_file("demo.yml","demo",Path(file).read_text())
+    
 if __name__ == "__main__":
     obj1 = Instance(id="123")
     obj2 = Work(id="345")
     obj2.set_instance(obj1)
-    get_members(obj2)
+    get_obj_members(obj2)
+
+
 

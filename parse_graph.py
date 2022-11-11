@@ -25,11 +25,13 @@ def ewtstobo(ewtsstr):
 def get_value(g, id, type):
     if g.value(BDR[id], BDO[type]):
         value = g.value(BDR[id], BDO[type])
-        return value
+        return value.split("/")[-1]
     else:
         return None
 
-def get_location_info(id):
+def get_location_info(location_ids):
+    for location_id in location_ids:
+        id = location_id.split("/")[-1]
     g = get_graph_of_id(id)
     location_info = {
         "contentLocationEndLine": get_value(g, id, "contentLocationEndLine"),
@@ -42,8 +44,10 @@ def get_location_info(id):
     return location_info
 
 def get_root_instance_id(g, id):
-    root_instance_id = g.objects(BDR[id], BDO["inRootInstance"])
-    return root_instance_id
+    root_instance_ids = g.objects(BDR[id], BDO["inRootInstance"])
+    for root_instance_id in root_instance_ids:
+        root_instance = root_instance_id.split("/")[-1]
+    return root_instance
        
 def get_instance_info(id):
     instance_g = get_graph_of_id(id)
@@ -51,7 +55,16 @@ def get_instance_info(id):
     location_info = get_location_info(location_id)
     rootInstanceid = get_root_instance_id(instance_g, id)
     title, alternative_title  = get_titles(instance_g, id)
-    
+    authors = get_author(instance_g, id)
+    instance_info= {
+        "id": rootInstanceid,
+        "title": title,
+        "alternative_title": alternative_title,
+        "authors": authors,
+        "bdrc_id": str,
+        "location_info": location_info
+    }
+    return instance_info
 
 def get_instance_info_list(instance_ids):
     instances = []
@@ -135,7 +148,7 @@ def get_work_info(id, OP_work_id):
             'alternative_title': alternative_title,
             'authors': authors,
             'bdrc_work_id': id,
-            'instances': get_instance_info_list(instances)
+            'instances': get_instance_info_list(instance_ids)
         }
         return work_info
     except:

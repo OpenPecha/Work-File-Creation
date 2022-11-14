@@ -1,4 +1,3 @@
-from ast import In
 from pathlib import Path
 import pydantic
 from typing import Optional,List,Dict
@@ -7,25 +6,26 @@ import yaml
 import inspect
 from git import Repo
 from github import Github
-import os
+import json
 
 
 class Instance(pydantic.BaseModel):
     id:str
-    #title:str
-    #language:str
-    #bdrc_instance_id:str
-    #opf_id:str
-    #bdrc_collection_info:Dict[str:str]
-    #source_metadata:Dict[str,str]
+    title:str
+    alternative_title:str
+    authors:str
+    bdrc_id:str
+    location_info:str
 
 
 class Work(pydantic.BaseModel):
     id: str
-    #title: str
-    #alt_titles: List[str]
-    #bdrc_work_id: str
+    title: str
+    alternative_title: str
+    bdrc_work_id: str
+    authors:str
     instances: Optional[List[Instance]]
+
 
     def get_instances(self) ->List[Instance]:
         return self.instances
@@ -39,6 +39,7 @@ class Work(pydantic.BaseModel):
             self.instances.append(instance_obj)   
 
 
+
 def get_openpechaId_from_catalog(workId):
     catalog = Path("catalog.csv").read_text()
     for line in catalog.splitlines():
@@ -48,34 +49,48 @@ def get_openpechaId_from_catalog(workId):
     return
 
 
-def convert_to_yaml(work_obj):
-    attributes = get_obj_members(work_obj)
-    y = yaml.dump(attributes)
+def convert_to_yaml(work_obj:Work):
+    attributes = json.loads(json.dumps(work_obj, default=lambda o: o.__dict__))
+    y = yaml.dump(attributes,sort_keys=False)
+    return y
 
 
-def get_obj_members(obj):
-    obj_attributes = []
-    for i in inspect.getmembers(obj):
-    # to remove private and protected
-    # functions
-        if not i[0].startswith('_'):
-            # To remove other methods that
-            # doesnot start with a underscore
-            if not inspect.ismethod(i[1]):
-                obj_attributes.append(i)
-    return obj_attributes
 
 def publish_repo(file,token):
     g = Github(token)
     works_repo_name = "OpenPecha-Data/works"
     works_repo = g.get_repo(works_repo_name)
     works_repo.create_file("demo.yml","demo",Path(file).read_text())
-    
+
+
+def create_work_file(work_dic):
+    try:
+        work_obj = Work(**work_dic)
+        work_yml = convert_to_yaml(work_obj)
+        print(type(work_obj.__dict__))
+        Path(f"{work_obj.id}.yml").write_text(work_yml,encoding="utf-8")
+    except Exception as e:
+        print(e)
+
+
 if __name__ == "__main__":
-    obj1 = Instance(id="123")
-    obj2 = Work(id="345")
-    obj2.set_instance(obj1)
-    get_obj_members(obj2)
+    work_dic = {
+            'id': "X123",
+            'title': "chojuk",
+            'alternative_title': "bodhi",
+            'authors': "pandit",
+            'bdrc_work_id': "BDr123",
+            'instances':[{
+                "id": "123",
+                "title": "sub",
+                "alternative_title": "xcx",
+                "authors": "des",
+                "bdrc_id": "Des",
+                "location_info": "Sdes"
+                }]
+        }
+    create_work_file(work_dic)
+    
 
 
 

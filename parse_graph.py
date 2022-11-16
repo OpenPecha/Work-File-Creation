@@ -8,6 +8,7 @@ from pathlib import Path
 from rdflib import Graph
 from rdflib.namespace import RDF, RDFS, SKOS, OWL, Namespace, NamespaceManager, XSD
 from openpecha.core.ids import get_work_id
+from openpecha.utils import dump_yaml
 
 
 BDR = Namespace("http://purl.bdrc.io/resource/")
@@ -53,15 +54,15 @@ def get_instance_info(id):
     instance_g = get_graph_of_id(id)
     location_id = instance_g.objects(BDR[id], BDO["contentLocation"])
     location_info = get_location_info(location_id)
-    rootInstanceid = get_root_instance_id(instance_g, id)
+    rootInstanceid = location_info["contentLocationInstance"]
     title, alternative_title  = get_titles(instance_g, id)
-    authors = get_author(instance_g, id)
+    authors = get_author(get_graph_of_id(rootInstanceid), rootInstanceid)
     instance_info= {
-        "id": rootInstanceid,
+        "id": id,
         "title": title,
         "alternative_title": alternative_title,
         "authors": authors,
-        "bdrc_id": str,
+        "bdrc_id": rootInstanceid,
         "location_info": location_info
     }
     return instance_info
@@ -109,10 +110,13 @@ def get_author(g, id):
     return authors
 
 def get_text(value):
-    if value.language == "bo-x-ewts":
-        return ewtstobo(value)
+    if value:
+        if value.language == "bo-x-ewts":
+            return ewtstobo(value)
+        else:
+            return value.split("/")[0]
     else:
-        return value.split("/")[0]
+        return
 
 def get_titles(g, id):
     title = g.value(BDR[id], SKOS["prefLabel"])
@@ -174,3 +178,5 @@ if __name__ == '__main__':
             work = info[1].split("/")[-1]
             OP_work_id = get_op_work_id(work)
             work_info = get_work_info(work, OP_work_id)
+            works_path = Path(f"./works/{OP_work_id}.yml")
+            dump_yaml(work_info,works_path)

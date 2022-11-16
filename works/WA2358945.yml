@@ -1,0 +1,80 @@
+id: WA2358945
+title: སྐུ་གསུམ་ལ་བསྟོད་པ་ཞེས་བྱ་བའི་རྣམ་པར་འགྲེལ་པ།
+alternative_title: Nāgārjuna
+authors:
+- ལོ་ཆེན་རིན་ཆེན་བཟང་པོ།
+- 龙树
+bdrc_work_id: WA0RT0016
+instances:
+- id: MW23702_0016
+  title: སྐུ་གསུམ་ལ་བསྟོད་པ་ཞེས་བྱ་བའི་རྣམ་པར་འགྲེལ་པ།
+  alternative_title: null
+  authors: []
+  bdrc_id: W23702
+  location_info:
+    contentLocationEndLine: '5'
+    contentLocationEndPage: '213'
+    contentLocationInstance: W23702
+    contentLocationLine: '1'
+    contentLocationPage: '204'
+    contentLocationVolume: '1'
+- id: MW2KG5015_0805
+  title: སྐུ་གསུམ་ལ་བསྟོད་པ་ཞེས་བྱ་བའི་རྣམ་པར་འགྲེལ་པ།
+  alternative_title: null
+  authors: []
+  bdrc_id: W2KG5015
+  location_info:
+    contentLocationEndLine: '4'
+    contentLocationEndPage: '167'
+    contentLocationInstance: W2KG5015
+    contentLocationLine: '5'
+    contentLocationPage: '159'
+    contentLocationVolume: '1'
+- id: MW1PD95844_0016
+  title: སྐུ་གསུམ་ལ་བསྟོད་པ་ཞེས་བྱ་བའི་རྣམ་པར་འགྲེལ་པ།
+  alternative_title: null
+  authors: []
+  bdrc_id: W1PD95844
+  location_info:
+    contentLocationEndLine: null
+    contentLocationEndPage: '254'
+    contentLocationInstance: W1PD95844
+    contentLocationLine: null
+    contentLocationPage: '245'
+    contentLocationVolume: '1'
+- id: MW1KG13126_2016
+  title: སྐུ་གསུམ་ལ་བསྟོད་པ་ཞེས་བྱ་བའི་རྣམ་པར་འགྲེལ་པ།
+  alternative_title: null
+  authors: []
+  bdrc_id: W1KG13126
+  location_info:
+    contentLocationEndLine: '8'
+    contentLocationEndPage: '178'
+    contentLocationInstance: W1KG13126
+    contentLocationLine: '4'
+    contentLocationPage: '170'
+    contentLocationVolume: '1'
+- id: MW23703_1124
+  title: སྐུ་གསུམ་ལ་བསྟོད་པ་ཞེས་བྱ་བའི་རྣམ་པར་འགྲེལ་པ།
+  alternative_title: null
+  authors: []
+  bdrc_id: W23703
+  location_info:
+    contentLocationEndLine: '3'
+    contentLocationEndPage: '150'
+    contentLocationInstance: W23703
+    contentLocationLine: '2'
+    contentLocationPage: '143'
+    contentLocationVolume: '1'
+- id: MW22704_0805
+  title: སྐུ་གསུམ་ལ་བསྟོད་པ་ཞེས་བྱ་བའི་རྣམ་པར་འགྲེལ་པ།
+  alternative_title: null
+  authors: []
+  bdrc_id: W22704
+  location_info:
+    contentLocationEndLine: '4'
+    contentLocationEndPage: '168'
+    contentLocationInstance: W22704
+    contentLocationLine: '5'
+    contentLocationPage: '160'
+    contentLocationVolume: '1'

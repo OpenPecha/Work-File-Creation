@@ -159,7 +159,7 @@ def get_work_info(id, OP_work_id):
         return {}
 
 def get_op_work_id(work_id):
-    with open("./data/idtowork.csv", newline="") as csvfile:
+    with open("./data/bdrc.csv", newline="") as csvfile:
         infos = csv.reader(csvfile, delimiter=",")
         for info in infos:
             id = info[0]

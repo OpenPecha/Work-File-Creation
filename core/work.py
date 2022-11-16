@@ -3,8 +3,6 @@ import pydantic
 from typing import Optional,List,Dict
 import re
 import yaml
-import inspect
-from git import Repo
 from github import Github
 import json
 
@@ -12,18 +10,18 @@ import json
 class Instance(pydantic.BaseModel):
     id:str
     title:str
-    alternative_title:str
-    authors:str
+    alternative_title:Optional[str]
+    authors:List[str]
     bdrc_id:str
-    location_info:str
+    location_info:dict
 
 
 class Work(pydantic.BaseModel):
     id: str
     title: str
-    alternative_title: str
+    alternative_title: Optional[str]
     bdrc_work_id: str
-    authors:str
+    authors:List[str]
     instances: Optional[List[Instance]]
 
 
@@ -51,8 +49,9 @@ def get_openpechaId_from_catalog(workId):
 
 def convert_to_yaml(work_obj:Work):
     attributes = json.loads(json.dumps(work_obj, default=lambda o: o.__dict__))
-    y = yaml.dump(attributes,sort_keys=False)
-    return y
+    dump_yaml(attributes,Path(f"{work_obj.id}.yml"))
+    #y = yaml.dump(attributes,sort_keys=False)
+    return 
 
 
 
@@ -66,29 +65,31 @@ def publish_repo(file,token):
 def create_work_file(work_dic):
     try:
         work_obj = Work(**work_dic)
-        work_yml = convert_to_yaml(work_obj)
-        print(type(work_obj.__dict__))
-        Path(f"{work_obj.id}.yml").write_text(work_yml,encoding="utf-8")
+        attributes = json.loads(json.dumps(work_obj, default=lambda o: o.__dict__))
+        dump_yaml(attributes,Path(f"{work_obj.id}.yml"))
     except Exception as e:
         print(e)
 
 
+def load_yaml(fn: Path) -> None:
+    return yaml.load(fn.open(encoding="utf-8"), Loader=yaml.CSafeLoader)
+
+
+def dump_yaml(data: Dict, output_fn: Path) -> Path:
+    with output_fn.open("w", encoding="utf-8") as fn:
+        yaml.dump(
+            data,
+            fn,
+            default_flow_style=False,
+            sort_keys=False,
+            allow_unicode=True,
+            Dumper=yaml.CSafeDumper,
+        )
+    return output_fn
+
+
 if __name__ == "__main__":
-    work_dic = {
-            'id': "X123",
-            'title': "chojuk",
-            'alternative_title': "bodhi",
-            'authors': "pandit",
-            'bdrc_work_id': "BDr123",
-            'instances':[{
-                "id": "123",
-                "title": "sub",
-                "alternative_title": "xcx",
-                "authors": "des",
-                "bdrc_id": "Des",
-                "location_info": "Sdes"
-                }]
-        }
+    work_dic = load_yaml(Path("./works/W0D4D7940.yml"))
     create_work_file(work_dic)
     
 

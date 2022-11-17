@@ -50,19 +50,24 @@ def get_root_instance_id(g, id):
         root_instance = root_instance_id.split("/")[-1]
     return root_instance
        
+def get_colophon(g, id):
+    colophon = g.value(BDR[id], BDO["colophon"])
+    return get_text(colophon)
+
 def get_instance_info(id):
     instance_g = get_graph_of_id(id)
     location_id = instance_g.objects(BDR[id], BDO["contentLocation"])
     location_info = get_location_info(location_id)
-    rootInstanceid = location_info["contentLocationInstance"]
-    title, alternative_title  = get_titles(instance_g, id)
+    rootInstanceid = get_root_instance_id(instance_g, id)
+    titles= get_titles_of_instance(instance_g, id)
+    colophon = get_colophon(instance_g, id)
     authors = get_author(get_graph_of_id(rootInstanceid), rootInstanceid)
     instance_info= {
         "id": id,
-        "title": title,
-        "alternative_title": alternative_title,
+        "title": titles,
+        "colophon": colophon,
         "authors": authors,
-        "bdrc_id": rootInstanceid,
+        "rootInstanceid": rootInstanceid,
         "location_info": location_info
     }
     return instance_info
@@ -102,28 +107,36 @@ def get_author(g, id):
     for author_id in author_ids:
         author_g = get_graph_of_id(author_id)
         author = author_g.value(BDR[author_id], SKOS["prefLabel"])
-        if author.language == "bo-x-ewts":
-            author = ewtstobo(author)
-            authors.append(author)
-        else:
-            authors.append(author.value)
+        authors.append(get_text(author))
     return authors
 
 def get_text(value):
     if value:
-        if value.language == "bo-x-ewts":
+        if value.language == "bo-x-ewts" or "sa-x-ewts":
             return ewtstobo(value)
         else:
             return value.split("/")[0]
     else:
         return
 
+def get_titles_of_instance(g, id):
+    titles = []
+    title_objects = g.objects(BDR[id], BDO["hasTitle"])
+    for title_object in title_objects:
+        title_id = title_object.split("/")[-1]
+        title_g = get_graph_of_id(title_id)
+        title_ = title_g.value(BDR[title_id], RDFS["label"])
+        title = get_text(title_)
+        titles.append(title)
+    return titles
+        
 def get_titles(g, id):
     title = g.value(BDR[id], SKOS["prefLabel"])
     alternative_title = g.value(BDR[id], SKOS["altLabel"])
     title = get_text(title)
     alternative_title = get_text(alternative_title)
     return title, alternative_title
+
 
 def get_graph_of_id(id):
     g = Graph()
@@ -133,6 +146,10 @@ def get_graph_of_id(id):
         return g
     except:
         return None
+def get_language(g, id):
+    _objects = g.objects(BDR[id], BDO["language"])
+    for _object in _objects:
+        return _object.split("/")[-1]
 
 def get_work_info(id, OP_work_id):
     instance_ids = []
@@ -141,18 +158,20 @@ def get_work_info(id, OP_work_id):
         
         title, alternative_title = get_titles(g, id)
         authors = get_author(g, id)
+        language = get_language(g, id)
         
         instances = g.objects(BDR[id], BDO["workHasInstance"])
         for instance in instances:
             instance_id = instance.split("/")[-1]
             instance_ids.append(instance_id)
         work_info = {
-            'id': OP_work_id,
-            'title': title,
-            'alternative_title': alternative_title,
-            'authors': authors,
-            'bdrc_work_id': id,
-            'instances': get_instance_info_list(instance_ids)
+            "id": OP_work_id,
+            "titles": title,
+            "alternative_title": alternative_title,
+            "authors": authors,
+            "language": language,
+            "bdrc_work_id": id,
+            "instances": get_instance_info_list(instance_ids)
         }
         return work_info
     except:

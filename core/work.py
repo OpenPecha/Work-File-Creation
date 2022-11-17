@@ -8,20 +8,21 @@ import json
 
 
 class Instance(pydantic.BaseModel):
-    id:str
-    title:str
-    alternative_title:Optional[str]
-    authors:List[str]
-    bdrc_id:str
-    location_info:dict
+    id: str
+    title: List[str]
+    colophon: str
+    authors: List[str]
+    bdrc_id: str
+    location_info: dict
 
 
 class Work(pydantic.BaseModel):
     id: str
     title: str
     alternative_title: Optional[str]
+    language: str
     bdrc_work_id: str
-    authors:List[str]
+    authors: List[str]
     instances: Optional[List[Instance]]
 
 

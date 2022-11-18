@@ -30,12 +30,17 @@ class Work(pydantic.BaseModel):
         return self.instances
 
 
-    def set_instance(self,instance_obj:Instance)->None:
-        if self.instances:
-            self.instances.append(instance_obj)
-        else:
-            self.instances = []
-            self.instances.append(instance_obj)   
+    def set_instance(self,instance:Dict)->None:
+        try:
+            instance_obj = Instance(**instance)
+            if self.instances:
+                self.instances.append(instance_obj)
+            else:
+                self.instances = []
+                self.instances.append(instance_obj)  
+        except Exception as e:
+            print(e)
+         
 
 
 
@@ -46,14 +51,6 @@ def get_openpechaId_from_catalog(workId):
             openPechaId = re.match("\[(.*)\]",line).group(1)
             return openPechaId
     return
-
-
-def convert_to_yaml(work_obj:Work):
-    attributes = json.loads(json.dumps(work_obj, default=lambda o: o.__dict__))
-    dump_yaml(attributes,Path(f"{work_obj.id}.yml"))
-    #y = yaml.dump(attributes,sort_keys=False)
-    return 
-
 
 
 def publish_repo(file,token):
@@ -70,6 +67,13 @@ def create_work_file(work_dic):
         dump_yaml(attributes,Path(f"{work_obj.id}.yml"))
     except Exception as e:
         print(e)
+        
+
+def is_work_file_created(work_id):
+    work_files = [work_file.stem for work_file in Path("./works").iterdir()]
+    if work_id in work_files:
+        return True
+    return False
 
 
 def load_yaml(fn: Path) -> None:
@@ -90,9 +94,12 @@ def dump_yaml(data: Dict, output_fn: Path) -> Path:
 
 
 if __name__ == "__main__":
-    work_dic = load_yaml(Path("./works/W0D4D7940.yml"))
-    create_work_file(work_dic)
-    
-
+    work = load_yaml(Path("works/WC8BEB943.yml"))
+    demo_instance = work["instances"][0]
+    work_dic = load_yaml(Path("W0D4D7940.yml"))
+    obj = Work(**work_dic)
+    obj.set_instance(demo_instance)
+    #create_work_file(work_dic)
+    #is_work_file_created("123")
 
 

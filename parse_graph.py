@@ -3,6 +3,12 @@ from openpecha.buda.api import get_buda_scan_info
 import csv
 import requests
 import pyewts
+import re
+import requests
+import csv
+import shutil
+from pathlib import Path
+from git import Repo
 
 from pathlib import Path
 from rdflib import Graph
@@ -17,6 +23,51 @@ BDA = Namespace("http://purl.bdrc.io/admindata/")
 ADM = Namespace("http://purl.bdrc.io/ontology/admin/")
 EWTSCONV = pyewts.pyewts()
 
+
+config = {
+    "OP_ORG": "https://github.com/Openpecha-Data"
+    }
+
+def get_catalog_info():
+    file_path = './'
+    repo_path = download_repo("catalog", file_path)
+    catalog_info = get_repos_info(repo_path)
+    return catalog_info
+
+
+def get_repos_info(repo_path):
+    curr = {}
+    catalog_info = {}
+    with open(f"{repo_path}/data/catalog.csv", newline="") as file:
+        pechas = list(csv.reader(file, delimiter=","))
+        for pecha in pechas[1:]:
+            pecha_id = re.search("\[.+\]", pecha[0])[0][1:-1]
+            work_id = pecha[-2]
+            curr[pecha_id] = {
+                "work_id": work_id
+            }
+            catalog_info.update(curr)
+            curr = {}
+    shutil.rmtree(str(repo_path))
+    return catalog_info
+
+
+def get_branch(repo, branch):
+    if branch in repo.heads:
+        return branch
+    return "master"
+
+
+def download_repo(repo_name, out_path=None, branch="master"):
+    pecha_url = f"{config['OP_ORG']}/{repo_name}.git"
+    out_path = Path(out_path)
+    out_path.mkdir(exist_ok=True, parents=True)
+    repo_path = out_path / repo_name
+    Repo.clone_from(pecha_url, str(repo_path))
+    repo = Repo(str(repo_path))
+    branch_to_pull = get_branch(repo, branch)
+    repo.git.checkout(branch_to_pull)
+    return repo_path
 
 
 def ewtstobo(ewtsstr):
@@ -53,6 +104,14 @@ def get_root_instance_id(g, id):
 def get_colophon(g, id):
     colophon = g.value(BDR[id], BDO["colophon"])
     return get_text(colophon)
+    
+def get_opf_id(instance_id, work_id):
+    for pecha_id, work_info in catalog_info.items():
+        if work_info["work_id"] == instance_id:
+            return pecha_id
+        elif work_info["work_id"] == work_id:
+            return pecha_id
+    return 
 
 def get_instance_info(id):
     instance_g = get_graph_of_id(id)
@@ -61,14 +120,14 @@ def get_instance_info(id):
     rootInstanceid = get_root_instance_id(instance_g, id)
     titles= get_titles_of_instance(instance_g, id)
     colophon = get_colophon(instance_g, id)
-    authors = get_author(get_graph_of_id(rootInstanceid), rootInstanceid)
+    pecha_id = get_opf_id(id, location_info["contentLocationInstance"])
     instance_info= {
         "id": id,
-        "title": titles,
+        "titles": titles,
         "colophon": colophon,
-        "authors": authors,
         "rootInstanceid": rootInstanceid,
-        "location_info": location_info
+        "location_info": location_info,
+        "opf_id": pecha_id
     }
     return instance_info
 
@@ -187,7 +246,7 @@ def get_op_work_id(work_id):
                 return id
         return get_work_id()
         
-        
+catalog_info = get_catalog_info()       
 
 if __name__ == '__main__':
     with open("./data/idtowork.csv", newline="") as csvfile:

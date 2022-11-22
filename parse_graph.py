@@ -113,6 +113,12 @@ def get_opf_id(instance_id, work_id):
             return pecha_id
     return 
 
+def get_collection_info(pecha_id, id):
+    return
+
+def get_alignment_info(pecha_id, id):
+    return
+
 def get_instance_info(id):
     instance_g = get_graph_of_id(id)
     location_id = instance_g.objects(BDR[id], BDO["contentLocation"])
@@ -121,13 +127,17 @@ def get_instance_info(id):
     titles= get_titles_of_instance(instance_g, id)
     colophon = get_colophon(instance_g, id)
     pecha_id = get_opf_id(id, location_info["contentLocationInstance"])
+    alignment_info = get_alignment_info(pecha_id, id)
+    collection_info = get_collection_info(pecha_id, id)
     instance_info= {
         "id": id,
         "titles": titles,
         "colophon": colophon,
         "rootInstanceid": rootInstanceid,
         "location_info": location_info,
-        "opf_id": pecha_id
+        "diplomatic_id": pecha_id,
+        "alignment_info": alignment_info,
+        "collection_info": collection_info
     }
     return instance_info
 
@@ -196,6 +206,8 @@ def get_titles(g, id):
     alternative_title = get_text(alternative_title)
     return title, alternative_title
 
+def get_best_copy(instances):
+    return
 
 def get_graph_of_id(id):
     g = Graph()
@@ -219,10 +231,12 @@ def get_work_info(id, OP_work_id):
         authors = get_author(g, id)
         language = get_language(g, id)
         
-        instances = g.objects(BDR[id], BDO["workHasInstance"])
-        for instance in instances:
-            instance_id = instance.split("/")[-1]
+        _instances = g.objects(BDR[id], BDO["workHasInstance"])
+        for _instance in _instances:
+            instance_id = _instance.split("/")[-1]
             instance_ids.append(instance_id)
+        
+        instances = get_instance_info_list(instance_ids)
         work_info = {
             "id": OP_work_id,
             "titles": title,
@@ -230,7 +244,8 @@ def get_work_info(id, OP_work_id):
             "authors": authors,
             "language": language,
             "bdrc_work_id": id,
-            "instances": get_instance_info_list(instance_ids)
+            "best_copy": get_best_copy(instances),
+            "instances": instances
         }
         return work_info
     except:
@@ -245,9 +260,17 @@ def get_op_work_id(work_id):
             if work_id == work:
                 return id
         return get_work_id()
-        
-catalog_info = get_catalog_info()       
 
+def parse_alignment_csv():
+    return {}       
+
+def parse_collection_csv():
+    return {}
+
+catalog_info = get_catalog_info() 
+alignment_csv_info = parse_alignment_csv()
+collection_csv_info = parse_collection_csv()      
+    
 if __name__ == '__main__':
     with open("./data/idtowork.csv", newline="") as csvfile:
         infos = csv.reader(csvfile, delimiter=",")

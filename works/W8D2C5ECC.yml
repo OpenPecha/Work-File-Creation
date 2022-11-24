@@ -22,9 +22,9 @@ instances:
     contentLocationLine: '3'
     contentLocationPage: '761'
     contentLocationVolume: '80'
-  diplomatic_id: null
-  alignment_info: null
-  collection_info: null
+  diplomatic_id: str
+  alignment_ids: []
+  collection_ids: []
 - id: MW2KG5015_0799
   titles:
   - ཆོས་ཀྱི་དབྱིངས་སུ་བསྟོད་པ།

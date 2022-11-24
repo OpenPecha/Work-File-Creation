@@ -1,28 +1,37 @@
 from pathlib import Path
-import pydantic
+from pydantic import BaseModel,validator
 from typing import Optional,List,Dict
 import re
 import yaml
 from github import Github
 import json
+import re
 
-
-class Instance(pydantic.BaseModel):
+class Instance(BaseModel):
     id: str
     title: List[str]
     colophon: str
     authors: List[str]
     bdrc_id: str
     location_info: dict
+    diplomatic_id:Optional[List[str]]
+    alignmnet_ids:Optional[List[str]]
+    collection_ids:Optional[List[str]]
 
+    @validator("diplomatic_id")
+    def validate_diplonatic_id(cls,value):
+        if not re.match(r"I.*",value):
+            raise ValueError("Pecha Id is not Diplomatic")
 
-class Work(pydantic.BaseModel):
+    
+class Work(BaseModel):
     id: str
     title: str
     alternative_title: Optional[str]
     language: str
     bdrc_work_id: str
     authors: List[str]
+    best_instance:Optional[Instance]
     instances: Optional[List[Instance]]
 
 

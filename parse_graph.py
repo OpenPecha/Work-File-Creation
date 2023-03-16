@@ -1,4 +1,3 @@
-from symbol import except_clause
 from openpecha.buda.api import get_buda_scan_info
 import csv
 import requests
@@ -15,7 +14,7 @@ from rdflib import Graph
 from rdflib.namespace import RDF, RDFS, SKOS, OWL, Namespace, NamespaceManager, XSD
 from openpecha.core.ids import get_work_id
 from openpecha.utils import dump_yaml
-
+from uuid import uuid4
 
 BDR = Namespace("http://purl.bdrc.io/resource/")
 BDO = Namespace("http://purl.bdrc.io/ontology/core/")
@@ -27,6 +26,8 @@ EWTSCONV = pyewts.pyewts()
 config = {
     "OP_ORG": "https://github.com/Openpecha-Data"
     }
+
+
 
 def get_catalog_info():
     file_path = './'
@@ -133,11 +134,10 @@ def get_instance_info(id):
         "id": id,
         "titles": titles,
         "colophon": colophon,
-        "rootInstanceid": rootInstanceid,
         "location_info": location_info,
         "diplomatic_id": pecha_id,
-        "alignment_id": alignment_id,
-        "collection_id": collection_id
+        "alignment_ids": alignment_id,
+        "collection_ids": collection_id
     }
     return instance_info
 
@@ -206,8 +206,6 @@ def get_titles(g, id):
     alternative_title = get_text(alternative_title)
     return title, alternative_title
 
-def get_best_instance(instances):
-    return
 
 def get_graph_of_id(id):
     g = Graph()
@@ -222,34 +220,32 @@ def get_language(g, id):
     for _object in _objects:
         return _object.split("/")[-1]
 
-def get_work_info(id, OP_work_id):
+def get_work_info(id, OP_work_id=None):
     instance_ids = []
-    try:
-        g = get_graph_of_id(id)
-        
-        title, alternative_title = get_titles(g, id)
-        authors = get_author(g, id)
-        language = get_language(g, id)
-        
-        _instances = g.objects(BDR[id], BDO["workHasInstance"])
-        for _instance in _instances:
-            instance_id = _instance.split("/")[-1]
-            instance_ids.append(instance_id)
-        
-        instances = get_instance_info_list(instance_ids)
-        work_info = {
-            "id": OP_work_id,
-            "titles": title,
-            "alternative_title": alternative_title,
-            "authors": authors,
-            "language": language,
-            "bdrc_work_id": id,
-            "best_instance": get_best_instance(instances),
-            "instances": instances
-        }
-        return work_info
-    except:
-        return {}
+    if not OP_work_id:
+        OP_work_id = get_op_work_id(id)
+    g = get_graph_of_id(id)
+    title, alternative_title = get_titles(g, id)
+    authors = get_author(g, id)
+    language = get_language(g, id)
+    
+    _instances = g.objects(BDR[id], BDO["workHasInstance"])
+    for _instance in _instances:
+        instance_id = _instance.split("/")[-1]
+        instance_ids.append(instance_id)
+    
+    instances = get_instance_info_list(instance_ids)
+    work_info = {
+        "id": OP_work_id,
+        "title": title,
+        "alternative_title": alternative_title,
+        "authors": authors,
+        "language": language,
+        "bdrc_work_id": id,
+        "instances": instances
+    }
+    return work_info
+    
 
 def get_op_work_id(work_id):
     with open("./data/bdrc.csv", newline="") as csvfile:
@@ -267,11 +263,13 @@ def parse_alignment_csv():
 def parse_collection_csv():
     return {}
 
+
 catalog_info = get_catalog_info() 
 alignment_csv_info = parse_alignment_csv()
-collection_csv_info = parse_collection_csv()      
+collection_csv_info = parse_collection_csv() 
     
 if __name__ == '__main__':
+     
     with open("./data/idtowork.csv", newline="") as csvfile:
         infos = csv.reader(csvfile, delimiter=",")
         for info in infos:

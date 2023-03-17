@@ -41,17 +41,3 @@ class Work(BaseModel):
                 self.instances.append(instance_obj)  
         except Exception as e:
             print(e)
-         
-
-
-
-
-
-
-
-
-
-
-
-
-

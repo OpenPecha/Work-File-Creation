@@ -29,27 +29,27 @@ config = {
 
 
 
-def get_catalog_info():
+def get_catalog_info(catalog_name):
     file_path = './'
     repo_path = download_repo("catalog", file_path)
-    catalog_info = get_repos_info(repo_path)
-    return catalog_info
+    catalog = Path(f"{repo_path}/{catalog_name}.csv").read_text(encoding="utf-8")
+    shutil.rmtree(str(repo_path))
+    return catalog
 
 
-def get_repos_info(repo_path):
+def get_opf_repos_info(opf_catalog):
     curr = {}
     catalog_info = {}
-    with open(f"{repo_path}/data/catalog.csv", newline="") as file:
-        pechas = list(csv.reader(file, delimiter=","))
-        for pecha in pechas[1:]:
-            pecha_id = re.search("\[.+\]", pecha[0])[0][1:-1]
-            work_id = pecha[-2]
-            curr[pecha_id] = {
-                "work_id": work_id
-            }
-            catalog_info.update(curr)
-            curr = {}
-    shutil.rmtree(str(repo_path))
+    pechas = list(opf_catalog.split("\n"))
+    for pecha in pechas[1:]:
+        row = pecha.split(",")
+        pecha_id = row[0]
+        work_id = row[-2]
+        curr[pecha_id] = {
+            "work_id": work_id
+        }
+        catalog_info.update(curr)
+        curr = {}
     return catalog_info
 
 
@@ -107,7 +107,8 @@ def get_colophon(g, id):
     return get_text(colophon)
     
 def get_opf_id(instance_id, work_id):
-    for pecha_id, work_info in catalog_info.items():
+    opf_catalog_info = get_opf_repos_info(opf_catalog)
+    for pecha_id, work_info in opf_catalog_info.items():
         if work_info["work_id"] == instance_id:
             return pecha_id
         elif work_info["work_id"] == work_id:
@@ -264,9 +265,10 @@ def parse_collection_csv():
     return {}
 
 
-catalog_info = get_catalog_info() 
-alignment_csv_info = parse_alignment_csv()
-collection_csv_info = parse_collection_csv() 
+opf_catalog = get_catalog_info("opf_catalog") 
+alignment_catalog = parse_alignment_csv()
+collection_catalog = parse_collection_csv()
+work_catalog = get_catalog_info("work_catalog")
     
 if __name__ == '__main__':
      

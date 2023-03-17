@@ -42,7 +42,7 @@ def get_opf_repos_info(opf_catalog):
     catalog_info = {}
     pechas = list(opf_catalog.split("\n"))
     for pecha in pechas[1:]:
-        row = pecha.split(",")
+        row = pecha.split(",",-1)
         pecha_id = row[0]
         work_id = row[-2]
         curr[pecha_id] = {
@@ -249,14 +249,14 @@ def get_work_info(id, OP_work_id=None):
     
 
 def get_op_work_id(work_id):
-    with open("./data/bdrc.csv", newline="") as csvfile:
-        infos = csv.reader(csvfile, delimiter=",")
-        for info in infos:
-            id = info[0]
-            work = info[1]
-            if work_id == work:
-                return id
-        return get_work_id()
+    works = work_catalog.split("\n")
+    for work in works[1:]:
+        row = work.split(",")
+        id = row[0]
+        work = row[2]
+        if work_id == work:
+            return id
+    return get_work_id()
 
 def parse_alignment_csv():
     return {}       

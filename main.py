@@ -31,26 +31,47 @@ def get_openpechaId_from_catalog(workId):
             return openPechaId
     return
 
+def add_instances_to_work(old_work,work):
+    pass
+
 
 def push_work(work,token):
     g = Github(token)
-    work_file_name = f"{work['id']}.yml"
     works_repo_name = "OpenPecha-Data/works"
     works_repo = g.get_repo(works_repo_name)
-    work_yml = yaml.dump(work,
-                default_flow_style=False,
-                sort_keys=False,
-                allow_unicode=True,
-                Dumper=yaml.SafeDumper
+    op_id = is_work_file_created(work["bdrc_work_id"])
+    if op_id:
+        work_file_name = f"{op_id}.yml"
+        old_work_content = works_repo.get_contents(f"/works/{work_file_name}")
+        old_work = yaml.safe_load(old_work_content.decoded_content)
+        new_work = add_instances_to_work(old_work,work)
+        new_work_content = yaml.dump(new_work)
+        works_repo.update_file(
+            path=f"works/{work_file_name}",
+            message=f"Update {work_file_name}",
+            content=new_work_content,
+            sha=old_work_content.sha,
                 )
-    works_repo.create_file(f"works/{work_file_name}",f"Created {work_file_name}",work_yml)
+    else:
+        work_file_name = f"{work['id']}.yml"
+        work_yml = yaml.dump(work,
+                    default_flow_style=False,
+                    sort_keys=False,
+                    allow_unicode=True,
+                    Dumper=yaml.SafeDumper
+                    )
+        works_repo.create_file(f"works/{work_file_name}",f"Created {work_file_name}",work_yml)
 
 
 def is_work_file_created(work_id):
-    work_files = [work_file.stem for work_file in Path("./works").iterdir()]
-    if work_id in work_files:
-        return True
-    return False
+    works = work_catalog.split("\n")
+    for work in works[1:]:
+        row = work.split(",")
+        id = row[0]
+        work = row[2]
+        if work_id == work:
+            return id
+    return
 
 
 def validate_work(work:Dict):

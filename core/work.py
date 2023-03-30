@@ -3,12 +3,14 @@ from typing import Optional,List,Dict
 import re
 
 class Instance(BaseModel):
+    """span={
+    'base_name':(start,end)}"""
     id: str
-    titles: List[str]
-    colophon: Optional[str]
+    title: str
     authors: Optional[List[str]]
     bdrc_id: Optional[str]
-    location_info: dict
+    language: str
+    span: Optional[dict]
     diplomatic_id:Optional[str]
     alignmnet_ids:Optional[List[str]]
     collection_ids:Optional[List[str]]
@@ -25,7 +27,6 @@ class Work(BaseModel):
     id: str
     title: str
     alternative_title: Optional[str]
-    language: str
     bdrc_work_id: str
     authors: List[str]
     best_instance:Optional[Instance]

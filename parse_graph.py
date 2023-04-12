@@ -1,8 +1,6 @@
-from openpecha.buda.api import get_buda_scan_info
 import csv
 import requests
 import pyewts
-import re
 import requests
 import csv
 import shutil
@@ -14,7 +12,6 @@ from rdflib import Graph
 from rdflib.namespace import RDF, RDFS, SKOS, OWL, Namespace, NamespaceManager, XSD
 from openpecha.core.ids import get_work_id
 from openpecha.utils import dump_yaml
-from uuid import uuid4
 
 BDR = Namespace("http://purl.bdrc.io/resource/")
 BDO = Namespace("http://purl.bdrc.io/ontology/core/")

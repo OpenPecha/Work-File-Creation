@@ -83,8 +83,11 @@ def get_value(g, id, type):
         return None
 
 def get_location_info(location_ids):
+    id = None
     for location_id in location_ids:
         id = location_id.split("/")[-1]
+    if id is None:
+        return 
     g = get_graph_of_id(id)
     location_info = {
         "contentLocationEndLine": get_value(g, id, "contentLocationEndLine"),
@@ -104,16 +107,20 @@ def get_root_instance_id(g, id):
        
 def get_colophon(g, id):
     colophon = g.value(BDR[id], BDO["colophon"])
+
     return get_text(colophon)
     
-def get_opf_id(instance_id, work_id):
+def get_opf_id(instance_id, location_info):
+    if location_info is None:
+        return 
+    work_id = location_info["contentLocationInstance"]
     opf_catalog_info = get_opf_repos_info(opf_catalog)
     for pecha_id, work_info in opf_catalog_info.items():
         if work_info["work_id"] == instance_id:
             return pecha_id
         elif work_info["work_id"] == work_id:
             return pecha_id
-    return 
+
 
 def get_collection_id(pecha_id, id):
     return
@@ -128,14 +135,14 @@ def get_instance_info(id):
     rootInstanceid = get_root_instance_id(instance_g, id)
     titles= get_titles_of_instance(instance_g, id)
     colophon = get_colophon(instance_g, id)
-    pecha_id = get_opf_id(id, location_info["contentLocationInstance"])
+    pecha_id = get_opf_id(id, location_info)
     alignment_id = get_alignment_id(pecha_id, id)
     collection_id = get_collection_id(pecha_id, id)
     instance_info= {
-        "id": id,
+        "bdrc_instance_id": id,
         "titles": titles,
         "colophon": colophon,
-        "location_info": location_info,
+        "span": location_info,
         "diplomatic_id": pecha_id,
         "alignment_ids": alignment_id,
         "collection_ids": collection_id
@@ -145,6 +152,7 @@ def get_instance_info(id):
 def get_instance_info_list(instance_ids):
     instances = []
     for instance_id in instance_ids:
+        print(instance_id)
         instance_info = get_instance_info(instance_id)
         instances.append(instance_info)
     return instances

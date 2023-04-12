@@ -5,11 +5,10 @@ import re
 class Instance(BaseModel):
     """span={
     'base_name':(start,end)}"""
-    id: str
-    title: str
+    bdrc_instance_id: str
+    titles: List[str]
     authors: Optional[List[str]]
-    bdrc_id: Optional[str]
-    language: str
+    language: Optional[str]
     span: Optional[dict]
     diplomatic_id:Optional[str]
     alignmnet_ids:Optional[List[str]]

@@ -87,17 +87,3 @@ def create_work(bdr_work_id,op_work_id=None):
     work = get_work_info(bdr_work_id,op_work_id)
     validated_work = validate_work(work)
     return validated_work
-
-def delete_file(token,path):
-    g = Github(token)
-    works_repo_name = "OpenPecha-Data/works"
-    works_repo = g.get_repo(works_repo_name)
-    file = works_repo.get_contents(path)
-    works_repo.delete_file(path, "test", file.sha)
-
-
-if __name__ == "__main__":
-    token = os.getenv("GITHUB_TOKEN")
-    work = create_work(bdr_work_id="WA0RT0010")
-    #dump_yaml(work,Path("test.yml"))
-    #push_work(work,token)

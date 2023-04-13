@@ -2,6 +2,7 @@ from main import create_work,dump_yaml
 from pathlib import Path
 import csv
 
+WORKS_DIR = "new_works"
 
 def get_work_ids():
     with open('bdrc.csv', newline='') as csvfile:
@@ -17,11 +18,10 @@ def main():
    for work_ids in get_work_ids():
         op_work_id,bdrc_work_id = work_ids
         print(bdrc_work_id)
-        work = create_work("WA0XL6864F9BF6755",op_work_id)
-        dump_yaml(work,Path(f"new_works/{work['id']}.yml"))
-        break
+        work = create_work(op_work_id,op_work_id)
+        dump_yaml(work,Path(f"{WORKS_DIR}/{work['id']}.yml"))
 
-    
+
 if __name__ == "__main__":
     main()
     

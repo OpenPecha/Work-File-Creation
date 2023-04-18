@@ -86,7 +86,7 @@ def validate_work(work:Dict):
 def create_work(bdr_work_id,op_work_id=None):
     work = get_work_info(bdr_work_id,op_work_id)
     validated_work = validate_work(work)
-    return validated_wor:wq
+    return validated_work
 
 def delete_file(token,path):
     g = Github(token)

@@ -129,7 +129,6 @@ def get_instance_info(id):
     instance_g = get_graph_of_id(id)
     location_id = instance_g.objects(BDR[id], BDO["contentLocation"])
     location_info = get_location_info(location_id)
-    rootInstanceid = get_root_instance_id(instance_g, id)
     titles= get_titles_of_instance(instance_g, id)
     colophon = get_colophon(instance_g, id)
     pecha_id = get_opf_id(id, location_info)
@@ -149,7 +148,6 @@ def get_instance_info(id):
 def get_instance_info_list(instance_ids):
     instances = []
     for instance_id in instance_ids:
-        print(instance_id)
         instance_info = get_instance_info(instance_id)
         instances.append(instance_info)
     return instances
@@ -242,7 +240,7 @@ def get_work_info(id, OP_work_id=None):
     
     instances = get_instance_info_list(instance_ids)
     work_info = {
-        "id": OP_work_id,
+        "op_id": OP_work_id,
         "title": title,
         "alternative_title": alternative_title,
         "authors": authors,

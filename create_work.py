@@ -27,7 +27,10 @@ def main():
         except Exception as e:
             logging.info(f"{bdrc_work_id},{e}")
 
-
+def test_main(bdrc_work_id):
+    work = create_work(bdrc_work_id)
+    dump_yaml(work,Path(f"{WORKS_DIR}/{work['op_id']}.yml"))
+        
 if __name__ == "__main__":
-    main()
+    test_main("WA0XL95F7CC5DCF29")
     

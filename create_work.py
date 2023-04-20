@@ -29,8 +29,8 @@ def main():
 
 def test_main(bdrc_work_id):
     work = create_work(bdrc_work_id)
-    dump_yaml(work,Path(f"{WORKS_DIR}/{work['op_id']}.yml"))
+    dump_yaml(work,Path(f"{WORKS_DIR}/{work['id']}.yml"))
         
 if __name__ == "__main__":
-    test_main("WA0XL95F7CC5DCF29")
+    test_main("WA1KG24729")
     

@@ -135,11 +135,11 @@ def get_instance_info(id):
     alignment_id = get_alignment_id(pecha_id, id)
     collection_id = get_collection_id(pecha_id, id)
     instance_info= {
+        "id":pecha_id,
         "bdrc_instance_id": id,
         "titles": titles,
         "colophon": colophon,
         "span": location_info,
-        "diplomatic_id": pecha_id,
         "alignment_ids": alignment_id,
         "collection_ids": collection_id
     }
@@ -240,7 +240,7 @@ def get_work_info(id, OP_work_id=None):
     
     instances = get_instance_info_list(instance_ids)
     work_info = {
-        "op_id": OP_work_id,
+        "id": OP_work_id,
         "title": title,
         "alternative_title": alternative_title,
         "authors": authors,

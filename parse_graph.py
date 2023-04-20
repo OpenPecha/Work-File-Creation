@@ -139,7 +139,7 @@ def get_instance_info(id):
         "bdrc_instance_id": id,
         "titles": titles,
         "colophon": colophon,
-        "span": location_info,
+        "spans": location_info,
         "alignment_ids": alignment_id,
         "collection_ids": collection_id
     }
